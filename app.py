@@ -27,7 +27,8 @@ def create_payment_pix():
     db.session.add(new_payment)
     db.session.commit()
 
-    return jsonify({"message": "The payment has been created"}), 201
+    return jsonify({"message": "The payment has been created",
+                    "payment": new_payment.to_dict()})
 
 
 @app.route('/payments/pix/confirmation', methods=["POST"])
