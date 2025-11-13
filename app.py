@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from repository.database import db
 from db_models.payment import Payment
 from datetime import datetime, timedelta
@@ -19,10 +19,9 @@ def create_payment_pix():
         return jsonify({"message": "Invalid value"}), 400
 
     expiration_date = datetime.now() + timedelta(minutes=30)
-
-    new_payment = Payment(
-        value=data['value'],
-        expiration_date=expiration_date)
+ 
+    new_payment = Payment(value=data['value'],
+                          expiration_date=expiration_date)
 
     pix_obj = Pix()
     data_payment_pix = pix_obj.create_payment()
@@ -35,10 +34,13 @@ def create_payment_pix():
     return jsonify({"message": "The payment has been created",
                     "payment": new_payment.to_dict()})
 
+@app.route('/payments/pix/qr_code/<file_name>', methods=["GET"])
+def get_image(file_name):
+    return send_file(f"static/img/{file_name}.png", mimetype='image/png')
+
 
 @app.route('/payments/pix/confirmation', methods=["POST"])
-def pix_confirmation():
-    return jsonify({"message": "The payment has been confirmed"})
+
 
 @app.route('/payments/pix/<int:payment_id>', methods=["GET"])
 def payment_pix_page(payment_id):
