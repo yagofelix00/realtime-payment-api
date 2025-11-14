@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, render_template
 from repository.database import db
 from db_models.payment import Payment
 from datetime import datetime, timedelta
@@ -25,7 +25,7 @@ def create_payment_pix():
 
     pix_obj = Pix()
     data_payment_pix = pix_obj.create_payment()
-    new_payment.bank_payment_id = data_payment_pix["bank_payment_pix"]
+    new_payment.bank_payment_id = data_payment_pix["bank_payment_id"]
     new_payment.qr_code = data_payment_pix["qr_code_path"]
 
     db.session.add(new_payment)
@@ -44,7 +44,7 @@ def get_image(file_name):
 
 @app.route('/payments/pix/<int:payment_id>', methods=["GET"])
 def payment_pix_page(payment_id):
-    return 'Pagamento pix'
+    return render_template('payment.html')
 
 
 if __name__ == '__main__':
