@@ -54,6 +54,11 @@ def payment_pix_page(payment_id):
                             host="http://127.0.0.1:5000",
                             qr_code=payment.qr_code)
 
+# websockets
+@SocketIO.on('connect')
+def handle_connect():
+    print("Client connected to the server")
+
 
 if __name__ == '__main__':
     SocketIO.run(app, debug=True)
