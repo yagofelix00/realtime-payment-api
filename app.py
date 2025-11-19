@@ -54,6 +54,12 @@ def pix_confirmation():
 
     if not payment:
         jsonify({"message": "Payment not found"}), 404
+
+    if data.get("value") != payment.value:
+        return jsonify({"message": "Invalid payment data"}), 400
+    payment.paid = True
+    db.session.commit()
+
     return jsonify({"message": "The payment has been confirmed"})
 
 @app.route('/payments/pix/<int:payment_id>', methods=['GET'])
