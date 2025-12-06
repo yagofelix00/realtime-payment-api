@@ -58,12 +58,16 @@
         </div>
       </footer>
     </main>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9")></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9"></script>
     <script>
       var socket = io.connect('{{host}}');
-      socket.on('payment-confirmed-{{payment-id}}', function() {
+      socket.on('payment-confirmed-{{payment_id}}', function() {
         console.log("Websocket connected")
-      })
+      });
+      socket.on('payment-confirmed-{{payment_id}}', function() {
+        console.log("Pagamento confirmado");
+        location.reload();
+      });
     </script>
   </body>
 </html>
