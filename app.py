@@ -86,6 +86,9 @@ def payment_pix_page(payment_id):
 def handle_connect():
     print("Client connected to the server")
 
+@SocketIO.on('disconnect')
+def handle_disconnect():
+    print("Client disconnected from the server")
 
 if __name__ == '__main__':
     SocketIO.run(app, debug=True)
