@@ -48,43 +48,52 @@ def create_payment_pix():
 
 @app.route('/payments/pix/qr_code/<file_name>', methods=["GET"])
 def get_image(file_name):
+    # Retorna a imagem do QR Code do pagamento
     return send_file(f"static/img/{file_name}.png", mimetype='image/png')
 
 
 @app.route('/payments/pix/confirmation', methods=["POST"])
 def pix_confirmation():
+    # Recebe a confirmação do pagamento via webhook
     data = request.get_json()
 
-    # validations
+    # Validação dos dados recebidos
     if "bank_payment_id" not in data:
         return jsonify({"message": "Invalid payment data"}), 400
     
-    # payment
+    # Busca o pagamento pelo ID do banco
     payment = Payment.query.filter_by(bank_payment_id=data.get("bank_payment_id")).first()
 
     if not payment:
         jsonify({"message": "Payment not found"}), 404
 
+    # Validação do valor pago
     if data.get("value") != payment.value:
         return jsonify({"message": "Invalid payment data"}), 400
+    
+    # Atualiza o status do pagamento
     payment.paid = True
     db.session.commit()
+
+    # Notifica o cliente via WebSocket
     SocketIO.emit(f'payment-confirmed-{payment.id}')
+
     return jsonify({"message": "The payment has been confirmed"})
 
 @app.route('/payments/pix/<int:payment_id>', methods=['GET'])
 def payment_pix_page(payment_id):
+    # Busca o pagamento pelo ID
     payment = Payment.query.get(payment_id)
 
     if not payment:
         return render_template("404.html")
     
-    
+    # Caso o pagamento já tenha sido confirmado
     if payment.paid:
         return render_template('confirmed_payment.html',
                                 payment_id=payment.id,
                                 value=payment.value)
-    
+    # Página de pagamento pendente
     return render_template('payment.html',
                             payment_id=payment.id,
                             value=payment.value,
@@ -94,11 +103,14 @@ def payment_pix_page(payment_id):
 # websockets
 @SocketIO.on('connect')
 def handle_connect():
+    # Evento disparado quando um cliente se conecta
     print("Client connected to the server")
 
 @SocketIO.on('disconnect')
 def handle_disconnect():
+    # Evento disparado quando um cliente se desconecta
     print("Client disconnected from the server")
 
 if __name__ == '__main__':
+    # Inicializa a aplicação com suporte a WebSockets
     SocketIO.run(app, debug=True)
