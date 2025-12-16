@@ -6,27 +6,37 @@ from payments.pix import Pix
 from flask_socketio import SocketIO
 
 app = Flask(__name__)
+
+# Configuração do banco de dados e chave secreta para sessões e WebSockets
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'SECRET_KEY_WEBSOCKET'
 
+# Inicialização do banco de dados e do SocketIO
 db.init_app(app)
 SocketIO = SocketIO(app)
 
 
 @app.route('/payments/pix', methods=["POST"])
 def create_payment_pix():
+    # Recebe os dados do pagamento via JSON
     data = request.get_json()
 
+    # Validação do valor do pagamento
     if 'value' not in data:
         return jsonify({"message": "Invalid value"}), 400
 
+     # Define a data de expiração do pagamento (30 minutos)
     expiration_date = datetime.now() + timedelta(minutes=30)
- 
+    
+    # Criação do pagamento no banco de dados
     new_payment = Payment(value=data['value'],
                           expiration_date=expiration_date)
 
+    # Criação do pagamento via serviço PIX
     pix_obj = Pix()
     data_payment_pix = pix_obj.create_payment()
+
+     # Associação dos dados retornados pelo serviço PIX
     new_payment.bank_payment_id = data_payment_pix["bank_payment_id"]
     new_payment.qr_code = data_payment_pix["qr_code_path"]
 
