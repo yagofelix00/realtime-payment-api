@@ -75,3 +75,192 @@ The API is designed to simulate real-world payment systems and asynchronous conf
 
 ---
 
+## 📂 Project Structure
+
+```
+realtime-payment-api/
+│
+├── app.py
+├── requirements.txt
+├── README.md
+│
+├── db_models/
+│   ├── payment.py
+│   └── __pycache__/
+│
+├── repository/
+│   ├── database.py
+│   └── __pycache__/
+│
+├── payments/
+│   ├── pix.py
+│   └── __pycache__/
+│
+├── instance/
+│   └── database.db
+│
+├── static/
+│   ├── css/
+│   ├── img/
+│   └── template_img/
+│
+├── templates/
+│   ├── payment.html
+│   ├── confirmed_payment.html
+│   └── 404.html
+│
+├── tests/
+│
+└── venv/
+
+```
+
+---
+
+## 📸 API Flow Example
+
+This project follows the flow below:
+
+1. Client creates a PIX payment
+2. API generates a QR Code and stores payment data
+3. Client accesses the payment page
+4. External service confirms the payment via webhook
+5. Client receives real-time confirmation via WebSocket
+
+*(Optional: add screenshots or GIFs showing the flow)*
+
+---
+
+## ▶️ How to Run the Project
+
+### 📥 1. Clone the Repository
+
+```bash
+git clone https://github.com/yagofelix00/realtime-payment-api.git
+cd realtime-payment-api
+```
+
+---
+
+### 📦 2. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+> Python 3.10+ recommended.
+
+---
+
+### ⚙️ 3. Configure the Environment
+
+Make sure you have:
+
+* Python installed
+* Virtual environment activated (optional but recommended)
+
+The project uses **SQLite**, so no external database setup is required.
+
+---
+
+### ▶️ 4. Run the Application
+
+```bash
+python app.py
+```
+
+The server will start at:
+
+```
+http://127.0.0.1:5000
+```
+
+---
+
+## 🔌 API Endpoints
+
+### ➕ Create PIX Payment
+
+`POST /payments/pix`
+
+```json
+{
+  "value": 100.0
+}
+```
+
+---
+
+### 🖼️ Get QR Code
+
+`GET /payments/pix/qr_code/<file_name>`
+
+---
+
+### ✅ Confirm Payment (Webhook)
+
+`POST /payments/pix/confirmation`
+
+```json
+{
+  "bank_payment_id": "abc123",
+  "value": 100.0
+}
+```
+
+---
+
+### 📄 Payment Page
+
+`GET /payments/pix/<payment_id>`
+
+---
+
+## 🛠️ Technologies Used
+
+* **Python**
+* **Flask**
+* **Flask-SocketIO**
+* **SQLAlchemy**
+* **SQLite**
+* **HTML / Jinja2**
+* **REST APIs**
+* **WebSockets**
+
+---
+
+## 🔮 Future Improvements
+
+* Add authentication and authorization
+* Implement payment expiration background jobs
+* Add unit and integration tests
+* Replace SQLite with PostgreSQL
+* Add Docker support
+* Add API documentation with Swagger/OpenAPI
+* Improve error handling and logging
+
+---
+
+## 📝 Notes
+
+* This project simulates a PIX payment flow for learning purposes
+* All payment data is fictional
+* Designed to practice:
+
+  * REST APIs
+  * Real-time communication
+  * Database persistence
+  * Webhooks
+  * Payment system concepts
+
+---
+
+## 👤 Author
+
+**Yago Félix**  
+💼 Python Developer — Back-end | Data Analytics | Full Stack  
+🔍 Focused on building scalable back-end systems, APIs, and real-time applications using Python.  
+📊 Interested in Back-end Development, Data Analytics, SQL, APIs, and system automation.  
+🔗 More projects: [https://github.com/yagofelix00](https://github.com/yagofelix00)  
+
+---
