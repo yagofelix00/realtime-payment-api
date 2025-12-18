@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+
+# Database
+instance/
+*.db
+
+# Generated files
+static/img/
+
+# OS
+.DS_Store
